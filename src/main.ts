@@ -1,4 +1,4 @@
-import { SpeechRecognitionWrapper } from './speech-recognition-wrapper';
+import { SpeechRecoWrapper } from './speech-reco-wrapper';
 const errorStateElement = document.getElementById('error-state');
 const recoStateElement = document.getElementById('reco-state');
 const interimElement = document.getElementById('interim-result');
@@ -30,7 +30,7 @@ const listener = {
 }
 
 try {
-  const recognition = new SpeechRecognitionWrapper(listener);
+  const recognition = new SpeechRecoWrapper(listener);
   recognition.initRecognition();
   recognition.start();
 } catch (e) {

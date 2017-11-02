@@ -1,4 +1,4 @@
-export interface SpeechRecognitionListener {
+export interface SpeechRecoListener {
   onAudioStart?: (evt) => void;
   onAudioEnd?: (evt) => void;
   onEnd?: (evt) => void;
@@ -12,11 +12,11 @@ export interface SpeechRecognitionListener {
   onStart?: (evt) => void;
 }
 
-export class SpeechRecognitionWrapper {
+export class SpeechRecoWrapper {
   private readonly SpeechRecognition: any;
   private recognition;
 
-  constructor(private listener: SpeechRecognitionListener) {
+  constructor(private listener: SpeechRecoListener) {
     this.SpeechRecognition = (<any>window).SpeechRecognition || (<any>window).webkitSpeechRecognition;
     if (!this.SpeechRecognition) {
       throw new Error("Unsupported Web Speech API.");
@@ -24,7 +24,7 @@ export class SpeechRecognitionWrapper {
   }
 
   initRecognition(): void {
-    console.log("[SpeechRecognitionWrapper] initRecognition");
+    console.log("[SpeechRecoWrapper] initRecognition");
     this.recognition = new this.SpeechRecognition();
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
@@ -48,25 +48,25 @@ export class SpeechRecognitionWrapper {
       }
 
       this.recognition[key] = (evt) => {
-        console.log(`[SpeechRecognitionWrapper] ${key}`);
+        console.log(`[SpeechRecoWrapper] ${key}`);
         handlers[key](evt);
       }
     });
   }
 
   start(): void {
-    console.log("[SpeechRecognitionWrapper] start");
+    console.log("[SpeechRecoWrapper] start");
     this.recognition.lang = 'ja-JP';
     this.recognition.start();
   }
 
   stop(): void {
-    console.log("[SpeechRecognitionWrapper] stop");
+    console.log("[SpeechRecoWrapper] stop");
     this.recognition.stop();
   }
 
   restart(): void {
-    console.log("[SpeechRecognitionWrapper] restart");
+    console.log("[SpeechRecoWrapper] restart");
     this.stop();
     this.initRecognition();
     this.start();
