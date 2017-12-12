@@ -28,6 +28,7 @@ export class SpeechRecoWrapper {
     this.recognition = new this.SpeechRecognition();
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
+    this.recognition.lang = 'ja-JP';
 
     const handlers = {
       onaudiostart: this.listener.onAudioStart,
@@ -56,7 +57,6 @@ export class SpeechRecoWrapper {
 
   start(): void {
     console.log("[SpeechRecoWrapper] start");
-    this.recognition.lang = 'ja-JP';
     this.recognition.start();
   }
 
