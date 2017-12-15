@@ -14,7 +14,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "typeRoots": [
-      "node_moduels/@types"
+      "node_modules/@types"
     ],
     "lib": [
       "es2017",
