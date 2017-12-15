@@ -1,31 +1,31 @@
-export interface SpeechRecoListener {
-  onAudioStart?: (evt) => void;
-  onAudioEnd?: (evt) => void;
-  onEnd?: (evt) => void;
-  onError?: (evt) => void;
-  onNoMatch?: (evt) => void;
-  onResult?: (evt) => void;
-  onSoundStart?: (evt) => void;
-  onSoundEnd?: (evt) => void;
-  onSpeechStart?: (evt) => void;
-  onSpeechEnd?: (evt) => void;
-  onStart?: (evt) => void;
+export interface ISpeechRecoListener {
+  onAudioStart?: (evt: Event) => any;
+  onAudioEnd?: (evt: Event) => any;
+  onSoundStart?: (evt: Event) => any;
+  onSpeechStart?: (evt: Event) => any;
+  onSpeechEnd?: (evt: Event) => any;
+  onSoundEnd?: (evt: Event) => any;
+  onResult?: (evt: SpeechRecognitionEvent) => any;
+  onNoMatch?: (evt: SpeechRecognitionEvent) => any;
+  onError?: (evt: SpeechRecognitionError) => any;
+  onStart?: (evt: Event) => any;
+  onEnd?: (evt: Event) => any;
 }
 
 export class SpeechRecoWrapper {
-  private readonly SpeechRecognition: any;
-  private recognition;
+  private readonly SpeechRecognitionStatic: any;
+  private recognition: SpeechRecognition;
 
-  constructor(private listener: SpeechRecoListener) {
-    this.SpeechRecognition = (<any>window).SpeechRecognition || (<any>window).webkitSpeechRecognition;
-    if (!this.SpeechRecognition) {
+  constructor(private listener: ISpeechRecoListener) {
+    this.SpeechRecognitionStatic = SpeechRecognition || webkitSpeechRecognition;
+    if (!this.SpeechRecognitionStatic) {
       throw new Error("Unsupported Web Speech API.");
     }
   }
 
   initRecognition(): void {
     console.log("[SpeechRecoWrapper] initRecognition");
-    this.recognition = new this.SpeechRecognition();
+    this.recognition = new this.SpeechRecognitionStatic();
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
     this.recognition.lang = 'ja-JP';
