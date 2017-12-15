@@ -15,6 +15,7 @@
   "scripts": {
     "build": "webpack",
     "clean": "rm -rf dist",
-    "start": "npm run build && http-server"
+    "start": "npm run build && http-server",
+    "deploy": "bash tools/deploy.sh"
   }
 }
