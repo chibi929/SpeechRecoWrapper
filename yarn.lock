@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/webspeechapi@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@types/webspeechapi/-/webspeechapi-0.0.28.tgz#9f25e5c1ddbfe9e5d30adee55d38823431386773"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
