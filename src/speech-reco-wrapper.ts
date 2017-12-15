@@ -17,7 +17,7 @@ export class SpeechRecoWrapper {
   private recognition: SpeechRecognition;
 
   constructor(private listener: ISpeechRecoListener) {
-    this.SpeechRecognitionStatic = SpeechRecognition || webkitSpeechRecognition;
+    this.SpeechRecognitionStatic = window["SpeechRecognition"] || window["webkitSpeechRecognition"];
     if (!this.SpeechRecognitionStatic) {
       throw new Error("Unsupported Web Speech API.");
     }
