@@ -12,23 +12,39 @@ export interface ISpeechRecoListener {
   onEnd?: (evt: Event) => any;
 }
 
+/**
+ * SpeechRecognition のラッパークラス
+ */
 export class SpeechRecoWrapper {
   private readonly SpeechRecognitionStatic: any;
   private recognition: SpeechRecognition;
 
-  constructor(private listener: ISpeechRecoListener) {
+  constructor(private readonly listener: ISpeechRecoListener) {
     this.SpeechRecognitionStatic = window["SpeechRecognition"] || window["webkitSpeechRecognition"];
     if (!this.SpeechRecognitionStatic) {
       throw new Error("Unsupported Web Speech API.");
     }
   }
 
-  initRecognition(): void {
+  /**
+   * SpeechRecognition を初期化する
+   *
+   * @param continuous 音声認識を連続で行うかどうか
+   * @param interimResults 途中経過も認識させるかどうか
+   * @param lang 認識対象言語
+   */
+  initRecognition(
+    continuous: boolean = true,
+    interimResults: boolean = true,
+    lang: string = 'ja-JP'
+  ): void {
     console.log("[SpeechRecoWrapper] initRecognition");
+
+    // 初期化
     this.recognition = new this.SpeechRecognitionStatic();
-    this.recognition.continuous = true;
-    this.recognition.interimResults = true;
-    this.recognition.lang = 'ja-JP';
+    this.recognition.continuous = continuous;
+    this.recognition.interimResults = interimResults;
+    this.recognition.lang = lang;
 
     const handlers = {
       onaudiostart: this.listener.onAudioStart,
@@ -43,6 +59,8 @@ export class SpeechRecoWrapper {
       onspeechend: this.listener.onSpeechEnd,
       onstart: this.listener.onStart
     };
+
+    // ハンドラーの登録
     Object.keys(handlers).forEach(key => {
       if (!handlers[key]) {
         return;
@@ -55,16 +73,25 @@ export class SpeechRecoWrapper {
     });
   }
 
+  /**
+   * SpeechRecognition を開始する
+   */
   start(): void {
     console.log("[SpeechRecoWrapper] start");
     this.recognition.start();
   }
 
+  /**
+   * SpeechRecognition を停止する
+   */
   stop(): void {
     console.log("[SpeechRecoWrapper] stop");
     this.recognition.stop();
   }
 
+  /**
+   * SpeechRecognition を再起動する
+   */
   restart(): void {
     console.log("[SpeechRecoWrapper] restart");
     this.stop();
