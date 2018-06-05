@@ -1,15 +1,59 @@
 export interface ISpeechRecoListener {
+  /**
+   * オーディオのキャプチャを開始したときのイベント
+   */
   onAudioStart?: (evt: Event) => any;
+
+  /**
+   * オーディオのキャプチャを終了したときのイベント
+   */
   onAudioEnd?: (evt: Event) => any;
-  onSoundStart?: (evt: Event) => any;
-  onSpeechStart?: (evt: Event) => any;
-  onSpeechEnd?: (evt: Event) => any;
-  onSoundEnd?: (evt: Event) => any;
-  onResult?: (evt: SpeechRecognitionEvent) => any;
-  onNoMatch?: (evt: SpeechRecognitionEvent) => any;
-  onError?: (evt: SpeechRecognitionError) => any;
-  onStart?: (evt: Event) => any;
+
+  /**
+   * 音声認識サービスが切断されたときのイベント
+   */
   onEnd?: (evt: Event) => any;
+
+  /**
+   * 音声認識エラーが発生したときのイベント
+   */
+  onError?: (evt: SpeechRecognitionError) => any;
+
+  /**
+   * 音声認識サービスが有意な認識無しに最終結果を返すときのイベント
+   */
+  onNoMatch?: (evt: SpeechRecognitionEvent) => any;
+
+  /**
+   * 音声認識サービスが結果を返すときのイベント
+   * 単語やフレーズが確実に認識され、これがアプリに返されます
+   */
+  onResult?: (evt: SpeechRecognitionEvent) => any;
+
+  /**
+   * 音声認識可能な発話かどうかが検出されたときのイベント
+   */
+  onSoundStart?: (evt: Event) => any;
+
+  /**
+   * 音声認識可能な発話かどうかが検出されなくなったときのイベント
+   */
+  onSoundEnd?: (evt: Event) => any;
+
+  /**
+   * 音声認識サービスによって音声が検出されたときのイベント
+   */
+  onSpeechStart?: (evt: Event) => any;
+
+  /**
+   * 音声認識サービスによって音声が検出されなくなったときのイベント
+   */
+  onSpeechEnd?: (evt: Event) => any;
+
+  /**
+   * 音声認識サービスが開始したときのイベント
+   */
+  onStart?: (evt: Event) => any;
 }
 
 /**
