@@ -63,7 +63,15 @@ export class SpeechRecoWrapper {
   private readonly SpeechRecognitionStatic: any;
   private recognition: SpeechRecognition;
 
-  constructor(private readonly listener: ISpeechRecoListener) {
+  /**
+   * コンストラクタ
+   * @param listener コールバック用リスナー
+   * @param autoRestart 自動リスタートフラグ
+   */
+  constructor(
+    private readonly listener: ISpeechRecoListener,
+    private readonly autoRestart: boolean = false
+  ) {
     this.SpeechRecognitionStatic = window["SpeechRecognition"] || window["webkitSpeechRecognition"];
     if (!this.SpeechRecognitionStatic) {
       throw new Error("Unsupported Web Speech API.");
@@ -91,17 +99,64 @@ export class SpeechRecoWrapper {
     this.recognition.lang = lang;
 
     const handlers = {
-      onaudiostart: this.listener.onAudioStart,
-      onaudioend: this.listener.onAudioEnd,
-      onend: this.listener.onEnd,
-      onerror: this.listener.onError,
-      onnomatch: this.listener.onNoMatch,
-      onresult: this.listener.onResult,
-      onsoundstart: this.listener.onSoundStart,
-      onsoundend: this.listener.onSoundEnd,
-      onspeechstart: this.listener.onSpeechStart,
-      onspeechend: this.listener.onSpeechEnd,
-      onstart: this.listener.onStart
+      onaudiostart: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onaudiostart");
+        this.listener.onAudioStart && this.listener.onAudioStart(evt);
+      },
+      onaudioend: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onaudioend");
+        this.listener.onAudioEnd && this.listener.onAudioEnd(evt);
+      },
+      onend: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onend");
+        this.listener.onEnd && this.listener.onEnd(evt);
+      },
+      onerror: (evt: SpeechRecognitionError) => {
+        console.log("[SpeechRecoWrapper] onerror");
+        this.listener.onError && this.listener.onError(evt);
+        if (this.autoRestart) {
+          this.restart(500);
+        }
+      },
+      onnomatch: (evt: SpeechRecognitionEvent) => {
+        console.log("[SpeechRecoWrapper] onnomatch");
+        this.listener.onNoMatch && this.listener.onNoMatch(evt);
+      },
+      onresult: (evt: SpeechRecognitionEvent) => {
+        console.log("[SpeechRecoWrapper] onresult");
+        this.listener.onResult && this.listener.onResult(evt);
+        if (this.autoRestart) {
+          for (var i = evt.resultIndex; i < evt.results.length; ++i) {
+            const result = evt.results[i];
+            if (result.isFinal) {
+              this.restart(500);
+            }
+          }
+        }
+      },
+      onsoundstart: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onsoundstart");
+        this.listener.onSoundStart && this.listener.onSoundStart(evt);
+      },
+      onsoundend: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onsoundend");
+        this.listener.onSoundEnd && this.listener.onSoundEnd(evt);
+        if (this.autoRestart) {
+          this.restart(500);
+        }
+      },
+      onspeechstart: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onspeechstart");
+        this.listener.onSpeechStart && this.listener.onSpeechStart(evt);
+      },
+      onspeechend: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onspeechend");
+        this.listener.onSpeechEnd && this.listener.onSpeechEnd(evt);
+      },
+      onstart: (evt: Event) => {
+        console.log("[SpeechRecoWrapper] onstart");
+        this.listener.onStart && this.listener.onStart(evt);
+      }
     };
 
     // ハンドラーの登録
@@ -134,12 +189,15 @@ export class SpeechRecoWrapper {
   }
 
   /**
-   * SpeechRecognition を再起動する
+   * SpeechRecognition を再起動
+   * @param delay 遅延時間
    */
-  restart(): void {
-    console.log("[SpeechRecoWrapper] restart");
-    this.stop();
-    this.initRecognition();
-    this.start();
+  restart(delay: number = 0): void {
+    console.log(`[SpeechRecoWrapper] restart: delay = "${delay}"`);
+    setTimeout(() => {
+      this.stop();
+      this.initRecognition();
+      this.start();
+    }, delay);
   }
 }
