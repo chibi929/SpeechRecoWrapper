@@ -62,6 +62,7 @@ export interface ISpeechRecoListener {
 export class SpeechRecoWrapper {
   private readonly SpeechRecognitionStatic: any;
   private recognition: SpeechRecognition;
+  private intentionalStop = false;
 
   /**
    * コンストラクタ
@@ -91,6 +92,7 @@ export class SpeechRecoWrapper {
     lang: string = 'ja-JP'
   ): void {
     console.log("[SpeechRecoWrapper] initRecognition");
+    this.intentionalStop = false;
 
     // 初期化
     this.recognition = new this.SpeechRecognitionStatic();
@@ -110,6 +112,9 @@ export class SpeechRecoWrapper {
       onend: (evt: Event) => {
         console.log("[SpeechRecoWrapper] onend");
         this.listener.onEnd && this.listener.onEnd(evt);
+        if (this.autoRestart && !this.intentionalStop) {
+          this.restart(500);
+        }
       },
       onerror: (evt: SpeechRecognitionError) => {
         console.log("[SpeechRecoWrapper] onerror");
@@ -141,9 +146,6 @@ export class SpeechRecoWrapper {
       onsoundend: (evt: Event) => {
         console.log("[SpeechRecoWrapper] onsoundend");
         this.listener.onSoundEnd && this.listener.onSoundEnd(evt);
-        if (this.autoRestart) {
-          this.restart(500);
-        }
       },
       onspeechstart: (evt: Event) => {
         console.log("[SpeechRecoWrapper] onspeechstart");
@@ -182,9 +184,11 @@ export class SpeechRecoWrapper {
 
   /**
    * SpeechRecognition を停止する
+   * @param intentionalStop 意図的な停止フラグ
    */
-  stop(): void {
-    console.log("[SpeechRecoWrapper] stop");
+  stop(intentionalStop: boolean = false): void {
+    console.log('[SpeechRecoWrapper] stop');
+    this.intentionalStop = intentionalStop;
     this.recognition.stop();
   }
 
